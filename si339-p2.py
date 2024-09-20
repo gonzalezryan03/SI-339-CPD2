@@ -1,5 +1,5 @@
 import csv
-
+import pandas as pd
 # Define the HTML template as a string
 html_template = '''
 <!DOCTYPE html>
@@ -36,31 +36,30 @@ html_template = '''
 
 # Path to the uploaded CSV file
 csv_file_path = 'athletes/womens_team/Cecilia DeGuzman21142897.csv'
+html_output = ""
+# Read the CSV, skipping the first two lines
+df = pd.read_csv(csv_file_path, skiprows=4, header=0)
 
-# Read the CSV and extract the relevant information
-with open(csv_file_path, mode='r') as file:
-    csv_reader = csv.DictReader(file)
+# Fill NaN values with 'Unknown' or appropriate default
+df = df.fillna('Unknown')
+
+for index, row in df.iterrows():
+    athlete_name = row['Name']
+    meet = row['Meet']
+    date = row['Date']
+    time = row['Time']
+    overall_place = row['Overall Place']
     
-    # Loop through each row in the CSV (assuming there's more than one row)
-    for row in csv_reader:
-        athlete_name = row['Athlete Name']  # Adjust based on actual column name
-        meet = row['Meet']                  # Adjust based on actual column name
-        date = row['Date']                  # Adjust based on actual column name
-        time = row['Time']                  # Adjust based on actual column name
-        overall_place = row['Overall Place']# Adjust based on actual column name
+    print(f"Athlete: {athlete_name}, Meet: {meet}, Date: {date}, Time: {time}, Overall Place: {overall_place}")
+    # Populate the HTML template with data from CSV
+    html_output += html_template.format(
+        athlete_name=athlete_name,
+        meet=meet,
+        date=date,
+        time=time,
+        overall_place=overall_place
+    )
 
-        # Populate the HTML template with data from CSV
-        html_output = html_template.format(
-            athlete_name=athlete_name,
-            meet=meet,
-            date=date,
-            time=time,
-            overall_place=overall_place
-        )
-
-        # Save the HTML to a file or print to check
-        with open(f'{athlete_name}_info.html', 'w') as output_file:
-            output_file.write(html_output)
-
-        # Break after first row if we only want one athlete's info
-        break
+    # Save the HTML to a file or print to check
+    with open(f'{athlete_name}_info.html', 'w') as output_file:
+        output_file.write(html_output)
