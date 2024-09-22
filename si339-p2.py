@@ -63,3 +63,33 @@ for index, row in df.iterrows():
     # Save the HTML to a file or print to check
     with open(f'{athlete_name}_info.html', 'w') as output_file:
         output_file.write(html_output)
+
+# Same thing for another athlete
+csv_file_path = 'athletes/mens_team/Bruno Cifaldi21147176.csv'
+html_output = ""
+df = pd.read_csv(csv_file_path, skiprows=4, header=0)
+
+# Fill NaN values with 'Unknown' or appropriate default
+df = df.fillna('Unknown')
+
+for index, row in df.iterrows():
+    athlete_name = row['Name']
+    meet = row['Meet']
+    date = row['Date']
+    time = row['Time']
+    overall_place = row['Overall Place']
+    
+    print(f"Athlete: {athlete_name}, Meet: {meet}, Date: {date}, Time: {time}, Overall Place: {overall_place}")
+    # Populate the HTML template with data from CSV
+    html_output += html_template.format(
+        athlete_name=athlete_name,
+        meet=meet,
+        date=date,
+        time=time,
+        overall_place=overall_place
+    )
+
+    # Save the HTML to a file or print to check
+    with open(f'{athlete_name}_info.html', 'w') as output_file:
+        output_file.write(html_output)
+
